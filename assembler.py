@@ -7,7 +7,6 @@ parser.add_argument('-d', '--destination', help='destination file for the machin
 cmdargs = parser.parse_args()
 
 class Instruction:
-
     def __init__(self, line):
         self.op = None
         self.rs1 = None
@@ -148,8 +147,8 @@ class Program:
                 func3 = 0b000 << 12
                 rs1 = (line.rs1 & 0b11111) << 15
                 imdt = (line.imdt & 0xFFF) # << 20
-                if imdt & 0x800:
-                    imdt = imdt | 0xFFFFF000
+                # if imdt & 0x800:
+                #     imdt = imdt | 0xFFFFF000
                 imdts = imdt << 20
                 match line.op:
                     case 'addi':
@@ -164,13 +163,6 @@ class Program:
                         func3 = 0b111 << 12
                 bits = opcode | rd | func3 | rs1 | imdts
             elif line.op in ['beq', 'bne']:
-                # bits_imdt = [line.imdt >> i & 1 for i in range(line.imdt.bit_length() - 1,-1,-1)]
-                # bits_imdt.reverse()
-                
-                # bits_imdt_14 = bits_imdt[1:4]
-                # bits_imdt_14.reverse()
-                # imdt1 = int('0b'+str(bits_imdt_14)+str(bits_imdt[11]), base=0) << 7
-
                 opcode = 0b1100011
                 func3 = 0b000 << 12 if line.op == 'beq' else 0b001 << 12
                 rs1 = (line.rs1 & 0b11111) << 15
@@ -180,9 +172,7 @@ class Program:
                 bit11_8_imdt4_1 = (line.imdt & 0x1E) << 7 # now at bit 8-11
                 bit_30_25_imdt10_5 = (line.imdt & 0x7E0) << 20 # now at bit 25-30
                 bit_31_imdt12 = (line.imdt & 0x1000) << 19 # now at bit 31
-                # bits_imdt_510 = bits_imdt[10:5]
-                # bits_imdt_510.reverse()
-                # imdt2 = int('0b'+str(bits_imdt[12]+str(bits_imdt_510)), base=0) << 25
+
                 bits = opcode | bit7_imdt11 | bit11_8_imdt4_1 | func3 | rs1 | rs2 | bit_30_25_imdt10_5 | bit_31_imdt12
             # export to f
             f.write(f'{hex(bits)}\n')
