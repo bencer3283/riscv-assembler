@@ -80,15 +80,15 @@ ori a0, a1, 42       # ori test
 andi a0, a1, 42      # andi test
 mul a0, a1, a2       # mul test
 
-# Branch test with direct line numbers as branch targets
-addi a0, zero, 5     # Line 82
-addi a1, zero, 5     # Line 83
-beq a0, a1, 85       # Line 84: branch to line 85
-addi a2, zero, 99    # Line 85: skipped if the branch is taken
+# Branch test with byte offsets
+addi a0, zero, 5     # Instruction at offset 0x0
+addi a1, zero, 5     # Instruction at offset 0x4
+beq a0, a1, 4        # Branch by 4 bytes (1 instruction) forward to skip the next instruction
+addi a2, zero, 99    # This instruction is skipped if the branch is taken
 
-addi a3, zero, 10    # Line 86
-addi a4, zero, 20    # Line 87
-bne a3, a4, 90       # Line 88: branch to line 90
-addi a5, zero, 99    # Line 89: skipped if the branch is taken
+addi a3, zero, 10    # Instruction
+addi a4, zero, 20    # Instruction
+bne a3, a4, 8        # Branch by 8 bytes (2 instructions) forward to skip the next instruction
+addi a5, zero, 99    # This instruction is skipped if the branch is taken
 
-addi a6, zero, 42    # Line 90
+addi a6, zero, 42    # This is the target of the bne instruction

@@ -2,3 +2,4 @@
 /pyenv/
 .DS_Store
 .vscode/launch.json
+*.mc

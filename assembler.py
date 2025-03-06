@@ -119,6 +119,8 @@ class Program:
 
     def assemble(self, f):
         for line in self.ins:
+            if not line.op in ['add', 'addi', 'sll', 'slli', 'srl', 'srli', 'xor', 'ori', 'andi', 'mul', 'beq', 'bne']:
+                continue
             bits = int()
             # assemble
             if line.op in ['add', 'sll', 'srl', 'xor', 'mul']:
@@ -183,12 +185,18 @@ class Program:
                 # imdt2 = int('0b'+str(bits_imdt[12]+str(bits_imdt_510)), base=0) << 25
                 bits = opcode | bit7_imdt11 | bit11_8_imdt4_1 | func3 | rs1 | rs2 | bit_30_25_imdt10_5 | bit_31_imdt12
             # export to f
+            f.write(f'{hex(bits)}\n')
             
 
 if __name__ == '__main__':
     print(f'assembling file {cmdargs.file}')
-    with open(cmdargs.file, 'r', encoding="utf-8") as f:
-        code = f.read()
+    with open(cmdargs.file, 'r', encoding="utf-8") as src:
+        code = src.read()
         p = Program(code)
         for ins in p.ins:
             print(f'op: {ins.op}, rd: {ins.rd}, rs1: {ins.rs1}, rs2: {ins.rs2}, imdt: {ins.imdt}\n', end='')
+        desname = cmdargs.destination if cmdargs.destination else (cmdargs.file.split('.', maxsplit=1)[0]+'.mc')
+        with open(desname, 'w', encoding="utf-8") as des:
+            p.assemble(des)
+            print(f'machine code written to {desname}\n')
+    
