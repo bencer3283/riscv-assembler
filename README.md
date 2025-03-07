@@ -42,6 +42,7 @@ python assembler.py <input_file> [-d <output_file>]
 - `andi rd, rs1, imm`
 
 ### B-type Instructions
+This assembler does not support text label for branch offset. When specifying branch offsets in B-type instructions, write the number of bytes to offset as the immediate value. For example, an immediate value of 4 will skip the next instruction. 
 - `beq rs1, rs2, offset`
 - `bne rs1, rs2, offset`
 
